@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="D:/iv4XR/aplib-master"/>
 	<classpathentry kind="lib" path="D:/iv4XR/labrecruits-master"/>
 	<classpathentry kind="lib" path="/aplib/libs/gson/gson-2.8.5.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
