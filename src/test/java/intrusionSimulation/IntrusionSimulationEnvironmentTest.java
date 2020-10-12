@@ -1,9 +1,10 @@
 package intrusionSimulation;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import communication.agent.AgentCommand;
 import helperclasses.datastructures.Vec3;
 
 public class IntrusionSimulationEnvironmentTest {
@@ -26,76 +27,39 @@ public class IntrusionSimulationEnvironmentTest {
 	}
 
 	@Test
-	public void disconnectTest()
-	{
-		var env = new IntrusionSimulationEnvironment();
-		boolean res = env.getResponse(ISRequest.disconnect());
-		Assertions.assertTrue(res);
-	}
-
-	@Test
-	public void startSimulationTest()
-	{
-		var env = new IntrusionSimulationEnvironment();
-		boolean res = env.getResponse(ISRequest.startSimulation());
-		Assertions.assertTrue(res);
-	}
-
-	@Test
-	public void pauseSimulationTest()
-	{
-		var env = new IntrusionSimulationEnvironment();
-		boolean res = env.getResponse(ISRequest.pauseSimulation());
-		Assertions.assertTrue(res);
-	}
-
-	@Test
-	public void restartSimulationTest()
-	{
-		var env = new IntrusionSimulationEnvironment();
-		boolean res = env.getResponse(ISRequest.restartSimulation());
-		Assertions.assertTrue(res);
-	}
-
-	@Test
 	public void observeTest()
 	{
 		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getResponse(ISRequest.command(AgentCommand.doNothing("agent")));
+		var obs = env.getISResponse(ISRequest.command(ISAgentCommand.doNothing("agent")));
 		Assertions.assertNotNull(obs);
 
 		System.out.println("AgentId: " + obs.agentID);
 		System.out.println("AgentPos: " + obs.agentPosition);
-
-		boolean res = env.getResponse(ISRequest.disconnect());
-		Assertions.assertTrue(res);
+		
+		if (!env.closeSocket())
+			System.out.println("Server refuses to close the socket exchange");
 	}
 
 	@Test
 	public void moveTowardTest()
 	{
 		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getResponse(ISRequest.command(AgentCommand.moveTowardCommand("agent", new Vec3(1.0, 0, 0), false)));
+		var obs = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand("agent", new Vec3(1.0, 0, 0))));
 		Assertions.assertNotNull(obs);
 
 		System.out.println("AgentId: " + obs.agentID);
 		System.out.println("AgentPos: " + obs.agentPosition);
-
-		boolean res = env.getResponse(ISRequest.disconnect());
-		Assertions.assertTrue(res);
-	}
-
-	@Test
-	public void interactWithTest()
-	{
-		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getResponse(ISRequest.command(AgentCommand.interactCommand("agent", "target")));
-		Assertions.assertNotNull(obs);
-
+		
+		try {
+			TimeUnit.SECONDS.sleep(5);
+		}
+		catch(InterruptedException e) {	}
+		
+		var obs2 = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand("agent2", new Vec3(1.0, 1.0, 0))));
 		System.out.println("AgentId: " + obs.agentID);
 		System.out.println("AgentPos: " + obs.agentPosition);
-
-		boolean res = env.getResponse(ISRequest.disconnect());
-		Assertions.assertTrue(res);
+		
+		if (!env.closeSocket())
+			System.out.println("Server refuses to close the socket exchange");
 	}
 }

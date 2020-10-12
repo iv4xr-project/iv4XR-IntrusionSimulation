@@ -2,8 +2,11 @@ package intrusionSimulation;
 
 public class ConfigEnvironment {
 
-	public transient String host = "localhost";
-	public transient int port = 8080;
+	public transient String hostMAEV = "localhost";
+	public transient int portMAEV = 8080;
+	
+	public transient String hostEXSU = "localhost";
+	public transient int portEXSU = 6080;
 
 	public String level_name = "";
 	public String level_path = "";

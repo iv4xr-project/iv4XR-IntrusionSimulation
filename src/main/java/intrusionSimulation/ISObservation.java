@@ -10,5 +10,5 @@ public class ISObservation {
 	public Vec3 agentPosition;
 	public Vec3 agentVelocity;
 	
-	public List<ISEntity> isEntities;
+	public List<ISEntity> entities;
 }

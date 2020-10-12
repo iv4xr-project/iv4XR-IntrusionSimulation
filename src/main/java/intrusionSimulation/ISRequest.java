@@ -1,6 +1,5 @@
 package intrusionSimulation;
 
-import communication.agent.AgentCommand;
 import world.LegacyObservation;
 
 /**
@@ -74,7 +73,7 @@ public class ISRequest<ResponseType>  {
 	/**
 	 * Request an observation after executing the sent Command
 	 */
-	public static ISRequest<LegacyObservation> command(AgentCommand command) {
-	return new ISRequest<>(LegacyObservation.class, ISRequestType.AGENTCOMMAND, command);
+	public static ISRequest<LegacyObservation> command(ISAgentCommand c) {
+	return new ISRequest<>(LegacyObservation.class, ISRequestType.AGENTCOMMAND, c);
 	}
 }

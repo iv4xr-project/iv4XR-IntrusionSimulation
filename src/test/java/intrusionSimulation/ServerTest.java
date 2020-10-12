@@ -41,8 +41,6 @@ public class ServerTest {
 
 		Assertions.assertTrue(goal.getStatus().inProgress());
 
-		Assertions.assertTrue(env.startSimulation());
-
 		while (goal.getStatus().inProgress())
 		{
 			agent.update();
@@ -53,17 +51,5 @@ public class ServerTest {
 		Assertions.assertFalse(goal.getStatus().inProgress());
 
 		env.close();
-	}
-
-	/*public static void main(String[] args) throws UnknownHostException {
-
-		//var config = new ConfigEnvironment();
-
-		//IntrusionSimulationEnvironment env = new IntrusionSimulationEnvironment(config);
-
-		AgentCommand agentCommand = null;
-
-		IntrusionSimulationEnvironment env = new IntrusionSimulationEnvironment(agentCommand);
-	}*/
-	
+	}	
 }

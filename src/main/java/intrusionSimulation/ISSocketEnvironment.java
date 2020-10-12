@@ -6,6 +6,8 @@ import java.net.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import communication.adapters.EntityAdapter;
 import communication.adapters.EntityTypeAdapter;
@@ -41,10 +43,10 @@ public class ISSocketEnvironment extends Environment {
 			toServer = new PrintWriter(socket.getOutputStream(),true);
 			fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-			toServer.println("Hello from " + socket.getLocalSocketAddress()); 
-			String line = fromServer.readLine();
-
-			System.out.println("Client received: " + line + " from Server");
+			//toServer.println("Hello from " + socket.getLocalSocketAddress()); 
+			//String line = fromServer.readLine();
+			//System.out.println("Client received: " + line + " from Server");
+			
 			toServer.close();
 			fromServer.close();
 			socket.close();
@@ -73,10 +75,6 @@ public class ISSocketEnvironment extends Environment {
 				 
 				toServer = new PrintWriter(socket.getOutputStream(), true);
 				fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				 
-				toServer.println("Hello from " + socket.getLocalSocketAddress()); 
-				//String received = fromServer.readLine();
-				//System.out.println("Received: " + received + " from Server");
 			}
 			catch(UnknownHostException u)
 			{
@@ -111,13 +109,33 @@ public class ISSocketEnvironment extends Environment {
 		return (System.nanoTime() - startTimeNano) / 1000000f;
 	}
 
+	public boolean closeSocket()
+	{
+		try {
+			if (toServer != null)
+				toServer.close();
+			if (fromServer != null)
+				fromServer.close();
+			if (socket != null)
+				socket.close();
+			
+			System.out.println(String.format("Disconnected from the host."));
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			System.out.println(String.format("Could not disconnect from the host by closing the socket."));
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Close the socket and input output streams
 	 */
 	public boolean close() {
 
 		// try to disconnect
-		boolean success = getResponse(ISRequest.disconnect());
+		boolean success = getISResponse(ISRequest.disconnect());
 
 		if(success){
 			try {
@@ -150,6 +168,31 @@ public class ISSocketEnvironment extends Environment {
 	protected Object sendCommand_(EnvOperation cmd) {
 		// The Environment super class uses sendCommand_ to send the message object
 		String message = (String) cmd.arg;
+		
+		JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
+		String type = "";
+		boolean exsuMessage = false;
+		String reqType = jsonObject.getAsJsonObject().get("cmd").getAsString();
+		
+		if (reqType.equals("DISCONNECT")) {
+			exsuMessage = true;
+			type = "Close";
+		}
+		else if (reqType.equals("START")) {
+			exsuMessage = true;
+			type = "Play";
+		}
+		else if (reqType.equals("PAUSE")) {
+			exsuMessage = true;
+			type = "Pause";
+		}
+		else if (reqType.equals("RESTART")) {
+			exsuMessage = true;
+			type = "Stop";
+		}
+
+		if (exsuMessage)
+			message = "{\"Service\":\"Simulation\",\"Command\":\"" + type + "\"}";
 
 		switch (cmd.command) {
 			case "debug":
@@ -159,8 +202,12 @@ public class ISSocketEnvironment extends Environment {
 					// write to the socket
 					toServer.println(message);
 					System.out.println("write to the socket:" + message);
+					
+                    String messageReceived = fromServer.readLine();
+                    System.out.println("messageReceived: " + messageReceived);
+                    		
 					// read from the socket
-					return fromServer.readLine();
+					return messageReceived;
 				} catch (IOException ex) {
 					System.out.println("I/O error: " + ex.getMessage());
 					return null;
@@ -176,26 +223,16 @@ public class ISSocketEnvironment extends Environment {
 	
 	/**
 	 * This method provides a higher level wrapper over Environment.sendCommand. It
-	 * calls Environment.sendCommand which in turn will call ClientSocket.sendCommand_
+	 * calls Environment.sendCommand which in turn will call ISSocketEnvironement.sendCommand_
 	 * It will also cast the json back to type T.
 	 * @param request
 	 * @param <T> any response type
 	 * @return response
 	 */
-	public <T> T getResponse(ISRequest<T> request) {
+	public <T> T getISResponse(ISRequest<T> request) {
 		String message = (String) sendCommand("APlib", "IS", "request", gson.toJson(request));
-
+		/*if(!close())
+			System.out.println(String.format("An error occurred while closing the connection"));*/
 		return (T) gson.fromJson(message, request.responseType);
 	}
-
-	/*public static void main(String[] args) throws UnknownHostException {
-		int serverPort = 8080;
-		String host = "localhost";
-		//InetAddress host = InetAddress.getByName("localhost"); 
-		//System.out.println("Connecting to server on host: " + host + " on port: " + serverPort);
-
-		ClientSocket client = new ClientSocket(host, serverPort);
-		//System.out.println("New client Socket created");
-		//client.run();
-	}*/
 }
