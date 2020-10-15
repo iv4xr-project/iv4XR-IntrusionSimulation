@@ -201,11 +201,11 @@ public class ISSocketEnvironment extends Environment {
 				try {
 					// write to the socket
 					toServer.println(message);
-					System.out.println("write to the socket:" + message);
-					
-                    String messageReceived = fromServer.readLine();
-                    System.out.println("messageReceived: " + messageReceived);
-                    		
+					System.out.println("message sent: " + message);
+
+					String messageReceived = fromServer.readLine();
+					System.out.println("message received: " + messageReceived);
+
 					// read from the socket
 					return messageReceived;
 				} catch (IOException ex) {
@@ -218,9 +218,9 @@ public class ISSocketEnvironment extends Environment {
 
 	private String printMessage(String message){
 		System.out.println("SENDING:" + message);
-	    return null;
+		return null;
 	}
-	
+
 	/**
 	 * This method provides a higher level wrapper over Environment.sendCommand. It
 	 * calls Environment.sendCommand which in turn will call ISSocketEnvironement.sendCommand_

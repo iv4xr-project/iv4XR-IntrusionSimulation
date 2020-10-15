@@ -2,6 +2,6 @@ package intrusionSimulation;
 
 public enum ISAgentCommandType
 {
-    DONOTHING,
-    MOVETO,
+	DONOTHING,
+	MOVETO,
 }

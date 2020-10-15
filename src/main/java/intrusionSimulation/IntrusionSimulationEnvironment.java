@@ -27,12 +27,12 @@ public class IntrusionSimulationEnvironment extends ISSocketEnvironment {
 		return wom;
 	}
 
-	public LabWorldModel moveTo(String agentId, Vec3 agentPosition, Vec3 target)
+	public LabWorldModel moveTo(int agentId, Vec3 agentPosition, Vec3 target)
 	{
 		return sendAgentCommand(ISAgentCommand.moveToCommand(agentId, agentPosition));
 	}
 
-	public LabWorldModel observe(String agentId) {
+	public LabWorldModel observe(int agentId) {
 		return sendAgentCommand(ISAgentCommand.doNothing(agentId));
 	}
 }
