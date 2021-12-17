@@ -1,6 +1,9 @@
 package intrusionSimulation;
 
-public class ExsuEnvironment extends ISSocketEnvironment {
+/**
+ * Specific MAEV entry point to start, pause or restart the simulation.
+ */
+public class ExsuEnvironment extends MAEVSocketEnvironment {
 
 	public ExsuEnvironment(ConfigEnvironment config) {
 		super(config.hostEXSU, config.portEXSU);

@@ -1,38 +1,56 @@
 package intrusionSimulation;
 
-import helperclasses.datastructures.Vec3;
-import world.LabWorldModel;
-import world.LegacyObservation;
+/**
+ * High-level wrapper of an Intrusion Simulation System Under Test,
+ * regardless of the simulation engine used.
+ */
+public class IntrusionSimulationEnvironment {
+	// Configuration parameters
+	private final static ConfigEnvironment CONFIG = new ConfigEnvironment();
+	// TCP Socket Connector
+	private final ISSocketEnvironment environment;
+	public boolean useSeStar;
 
-public class IntrusionSimulationEnvironment extends ISSocketEnvironment {
-
+	/**
+	 * Constructor. Initialize the environment from the given configuration, and
+	 * establish the TCP Socket connection.
+	 *
+	 * @param config Configuration of the Intrusion Simulation SUT.
+	 */
 	public IntrusionSimulationEnvironment(ConfigEnvironment config) {
-		super(config.hostMAEV, config.portMAEV);
+		useSeStar = config.useSeStar;
+		if (config.useSeStar) {
+			environment = new SeStarSocketEnvironment(config.hostSeStar, config.portSeStar);
+		} else {
+			environment = new MAEVSocketEnvironment(config.hostMAEV, config.portMAEV);
+		}
 	}
 
-	private static ConfigEnvironment CONFIG = new ConfigEnvironment();
-
+	/**
+	 * Constructor with the default configuration.
+	 */
 	public IntrusionSimulationEnvironment() {
-		super(CONFIG.hostMAEV, CONFIG.portMAEV);
+		this(CONFIG);
 	}
 
-	public IntrusionSimulationEnvironment(ISAgentCommand command) {
-		super(CONFIG.hostMAEV, CONFIG.portMAEV);
-		LabWorldModel lwm = sendAgentCommand(command);
-	};
-
-	public LabWorldModel sendAgentCommand(ISAgentCommand c) {
-		LegacyObservation obs = getISResponse(ISRequest.command(c));
-		var wom = LegacyObservation.toWorldModel(obs);
-		return wom;
+	/**
+	 * Send a request through the TCP Socket to the Intrusion Simulation,
+	 * and receive the associated response.
+	 *
+	 * @param request The request to the SUT.
+	 * @param <T> The type of the expected response object.
+	 * @return The response from the SUT.
+	 */
+	public <T> T sendRequest(ISRequest<T> request) {
+		return (T) environment.getISResponse(request);
 	}
 
-	public LabWorldModel moveTo(int agentId, Vec3 agentPosition, Vec3 target)
-	{
-		return sendAgentCommand(ISAgentCommand.moveToCommand(agentId, agentPosition));
-	}
-
-	public LabWorldModel observe(int agentId) {
-		return sendAgentCommand(ISAgentCommand.doNothing(agentId));
+	/**
+	 * Close the TCP connection to the Intrusion Simulation environment.
+	 *
+	 * @return Whether the socket is closed.
+	 */
+	public boolean closeSocket() {
+		return environment.closeSocket();
 	}
 }

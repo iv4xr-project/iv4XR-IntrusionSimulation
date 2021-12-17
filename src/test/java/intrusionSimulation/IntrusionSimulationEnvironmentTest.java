@@ -1,11 +1,10 @@
 package intrusionSimulation;
 
-import java.util.concurrent.TimeUnit;
-
+import eu.iv4xr.framework.spatial.Vec3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import helperclasses.datastructures.Vec3;
+import java.util.concurrent.TimeUnit;
 
 public class IntrusionSimulationEnvironmentTest {
 
@@ -39,11 +38,11 @@ public class IntrusionSimulationEnvironmentTest {
 		Assertions.assertTrue(res);
 
 		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getISResponse(ISRequest.command(ISAgentCommand.doNothing(1)));
+		var obs = env.sendRequest(ISRequest.command(ISAgentCommand.doNothing(1)));
 		Assertions.assertNotNull(obs);
 
-		System.out.println("AgentId: " + obs.agentID);
-		System.out.println("AgentPos: " + obs.agentPosition);
+		System.out.println("AgentId: " + obs.agentId);
+		System.out.println("AgentPos: " + obs.position);
 
 		if (!env.closeSocket())
 			System.out.println("Server refuses to close the socket exchange");
@@ -65,17 +64,17 @@ public class IntrusionSimulationEnvironmentTest {
 		Assertions.assertTrue(res);
 
 		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(2.0, 8.0, 0.0))));
+		var obs = env.sendRequest(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(2.0f, 8.0f, 0.0f))));
 		Assertions.assertNotNull(obs);
 
-		System.out.println("AgentId: " + obs.agentID);
-		System.out.println("AgentPos: " + obs.agentPosition);
+		System.out.println("AgentId: " + obs.agentId);
+		System.out.println("AgentPos: " + obs.position);
 		
-		var obs2 = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(2.0, 3.0, 0.0))));
+		var obs2 = env.sendRequest(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(2.0f, 3.0f, 0.0f))));
 		Assertions.assertNotNull(obs2);
 
-		System.out.println("AgentId: " + obs2.agentID);
-		System.out.println("AgentPos: " + obs2.agentPosition);
+		System.out.println("AgentId: " + obs2.agentId);
+		System.out.println("AgentPos: " + obs2.position);
 
 		if (!env.closeSocket())
 			System.out.println("Server refuses to close the socket exchange");
@@ -97,23 +96,23 @@ public class IntrusionSimulationEnvironmentTest {
 		Assertions.assertTrue(res);
 
 		var env = new IntrusionSimulationEnvironment();
-		var obs = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(8.0, 5.0, 0.0))));
+		var obs = env.sendRequest(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(8.0f, 5.0f, 0.0f))));
 		Assertions.assertNotNull(obs);
 
-		System.out.println("AgentId: " + obs.agentID);
-		System.out.println("AgentPos: " + obs.agentPosition);
+		System.out.println("AgentId: " + obs.agentId);
+		System.out.println("AgentPos: " + obs.position);
 
-		var obs2 = env.getISResponse(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(10.0, 9.0, 0.0))));
+		var obs2 = env.sendRequest(ISRequest.command(ISAgentCommand.moveToCommand(1, new Vec3(10.0f, 9.0f, 0.0f))));
 		Assertions.assertNotNull(obs2);
 
-		System.out.println("AgentId: " + obs2.agentID);
-		System.out.println("AgentPos: " + obs2.agentPosition);
+		System.out.println("AgentId: " + obs2.agentId);
+		System.out.println("AgentPos: " + obs2.position);
 
-		var obs3 = env.getISResponse(ISRequest.command(ISAgentCommand.doNothing(1)));
+		var obs3 = env.sendRequest(ISRequest.command(ISAgentCommand.doNothing(1)));
 		Assertions.assertNotNull(obs3);
 
-		System.out.println("AgentId: " + obs3.agentID);
-		System.out.println("AgentPos: " + obs3.agentPosition);
+		System.out.println("AgentId: " + obs3.agentId);
+		System.out.println("AgentPos: " + obs3.position);
 		
 		if (!env.closeSocket())
 			System.out.println("Server refuses to close the socket exchange");

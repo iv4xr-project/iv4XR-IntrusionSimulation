@@ -1,14 +1,17 @@
 package intrusionSimulation;
 
-import java.util.List;
+import eu.iv4xr.framework.mainConcepts.WorldModel;
 
-import helperclasses.datastructures.Vec3;
-
-public class ISObservation {
-
-	public String agendID;
-	public Vec3 agentPosition;
-	public Vec3 agentVelocity;
-	
-	public List<ISEntity> entities;
+/**
+ * WorldModel for the Intrusion Simulation SUT.
+ * Direct extension of the iv4xr base WorldModel.
+ *
+ * The point of view of the intruder is always used.
+ */
+public class ISObservation extends WorldModel {
+	/**
+	 * Whether the intruder is detected by one of the cameras or one of the
+	 * guards.
+	 */
+	public boolean isDetected = false;
 }
